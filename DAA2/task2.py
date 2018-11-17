@@ -76,7 +76,7 @@ class AssignWork:
 
         adjusted_m = result_m
         for row in rows_covered:
-            adjusted_m(row) += min_num_uncovered
+            adjusted_m[row] += min_num_uncovered
         for column in columns_covered:
             adjusted_m[:, column] += min_num_uncovered
 
@@ -111,13 +111,46 @@ class AssignWork:
 class CoverZeros:
 
     def __init__(self, matrix):
+        self.zero_loc = (matrix == 0)
+        self.shape = matrix.shape
+        self.choices = np.zeroes(self.shape, dtype=int)
+
+        self.rows_marked = []
+        self.columns_marked = []
+
+        self.calculate()
+
+        self.covered_rows = list(set(range(self.shape[0]))-set(self.marked_rows))
+        self.covered_columns = self.marked_columns
+
+    def calculate(self):
         
+        while True:
+            self.marked_rows = []
+            self.marked_columns = []
+
+            for index, row in enumerate(self.choices):
+                if not row.any():
+                    self.marked_rows.append(index)
+
+            if not self.marked_rows:
+                return True
+
+            num_marked_columns = self.mark_columns_with_zeros_in_marked_rows()
+
+            if num_marked_columns == 0:
+                return True
+
+            while self.choice_all_marked_columns(): #while there is a choice in every marked column
+
+            
+
         
 
 
 if __name__ == '__main__':
     profit_matrix = [
-        [10, 5 13, 15, 16],
+        [10, 5, 13, 15, 16],
         [3, 9, 18, 13, 6],
         [10, 7, 2, 2, 2],
         [7, 11, 9, 7, 12],
